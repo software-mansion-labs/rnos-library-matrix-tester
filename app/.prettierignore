@@ -1,0 +1,5 @@
+.github/
+android/
+ios/
+.watchmanconfig
+app.json

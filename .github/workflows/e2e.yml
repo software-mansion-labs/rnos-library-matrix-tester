@@ -1,0 +1,137 @@
+name: CI
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+    branches: ['main']
+  workflow_dispatch:
+
+jobs:
+  E2E:
+    runs-on: macos-12
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ['Android', 'iOS']
+        react-native-version: ['0.64.4', '0.65.3', '0.66.5', '0.67.5', '0.68.6', '0.69.8', '0.70.7', '0.71.2']
+        architecture: ['Paper', 'Fabric']
+        runtime: ['JSC', 'Hermes']
+        mode: ['debug', 'release']
+        exclude:
+          - react-native-version: '0.64.4'
+            architecture: 'Fabric'
+          - react-native-version: '0.65.3'
+            architecture: 'Fabric'
+          - react-native-version: '0.66.5'
+            architecture: 'Fabric'
+          - react-native-version: '0.67.5'
+            architecture: 'Fabric'
+          - react-native-version: '0.68.6'
+            architecture: 'Fabric'
+          - react-native-version: '0.69.8'
+            architecture: 'Fabric'
+          - react-native-version: '0.70.7'
+            architecture: 'Fabric'
+    env:
+      E2E_REACT_NATIVE_VERSION: ${{ matrix.react-native-version }}
+      E2E_ARCHITECTURE: ${{ matrix.architecture }}
+      E2E_RUNTIME: ${{ matrix.runtime }}
+      E2E_MODE: ${{ matrix.mode }}
+      E2E_PLATFORM: ${{ matrix.platform }}
+      E2E_IOS_SIMULATOR_NAME: iPhone 14 Pro
+      E2E_IOS_SIMULATOR_VERSION: 16.2
+      E2E_APP_NAME: MyApp
+      E2E_APP_PATH: ${{ github.workspace }}/MyApp
+    steps:
+      - name: Checkout Git repository
+        uses: actions/checkout@v3
+
+      - name: Validate config
+        run: ./cli/ValidateConfig.sh
+
+      - name: Create React Native app
+        run: ./cli/CreateApp.sh
+        timeout-minutes: 5
+
+      - name: Copy app files
+        run: ./cli/CopyAppFiles.sh
+
+      - name: Edit package.json
+        run: ./cli/EditPackageJson.sh
+
+      - name: Install Yarn dependencies
+        run: ./cli/InstallYarnDependencies.sh
+        timeout-minutes: 10
+
+      - name: Lint with Prettier
+        run: ./cli/LintWithPrettier.sh
+
+      - name: Lint with ESLint
+        run: ./cli/LintWithESLint.sh
+
+      - name: Check types
+        run: ./cli/CheckTypes.sh
+
+      - name: Select architecture
+        if: ${{ matrix.platform == 'Android' }}
+        run: ./cli/SelectArchitecture.sh
+
+      - name: Select runtime
+        run: ./cli/SelectRuntime.sh
+
+      - name: Install Pods
+        if: ${{ matrix.platform == 'iOS' }}
+        run: ./cli/InstallPods.sh
+        timeout-minutes: 15
+
+      - name: Setup Java 11
+        if: ${{ matrix.platform == 'Android' }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 11
+
+      - name: Create Android emulator
+        if: ${{ matrix.platform == 'Android' }}
+        timeout-minutes: 10
+        run: |
+          # brew install intel-haxm
+          # Install AVD files
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-27;default;x86_64'
+          echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+          
+          # Create emulator
+          $ANDROID_HOME/cmdline-tools/latest/bin/avdmanager create avd -n Pixel_API_29_AOSP -d pixel --package 'system-images;android-27;default;x86_64'
+          $ANDROID_HOME/emulator/emulator -list-avds
+          
+      - name: Start Android emulator
+        if: ${{ matrix.platform == 'Android' }}
+        timeout-minutes: 10
+        run: |
+          echo "Starting emulator and waiting for boot to complete...."
+          ls -la $ANDROID_HOME/emulator
+          nohup $ANDROID_HOME/tools/emulator -avd Pixel_API_29_AOSP -gpu host -no-audio -no-boot-anim -camera-back none -camera-front none -qemu -m 2048 2>&1 &
+          $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do echo "wait..."; sleep 1; done; input keyevent 82'
+          echo "Emulator has finished booting"
+          $ANDROID_HOME/platform-tools/adb devices
+          sleep 30
+
+      - name: Launch Metro bundler
+        run: ./cli/LaunchMetroBundler.sh
+
+      - name: Launch Appium server
+        run: ./cli/LaunchAppiumServer.sh
+
+      - name: Build app
+        run: ./cli/BuildApp.sh
+        timeout-minutes: 60
+
+      - name: Install WebDriverAgentRunner
+        if: ${{ matrix.platform == 'iOS' }}
+        run: ./cli/InstallWebDriverAgentRunner.sh
+
+      - name: Run E2E tests
+        run: ./cli/RunTests.sh
+        timeout-minutes: 15
