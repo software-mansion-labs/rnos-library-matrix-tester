@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
 set -u
 
-if [ $E2E_RUNTIME == "Hermes" ]; then
-    export USE_HERMES=1
-else
-    export USE_HERMES=0
-fi
-
 if [ $E2E_ARCHITECTURE == "Fabric" ]; then
     export RCT_NEW_ARCH_ENABLED=1
 else
