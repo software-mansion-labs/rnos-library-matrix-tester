@@ -28,6 +28,7 @@ echo "Started" && cd $SCRIPT_DIR/cli && \
     ./CheckTypes.sh && \
     ./SelectArchitecture.sh && \
     ./SelectRuntime.sh && \
+    ./IncreaseJavaHeapSize.sh && \
     ./InstallPods.sh && \
     ./LaunchMetroBundler.sh && \
     ./LaunchAppiumServer.sh && \
