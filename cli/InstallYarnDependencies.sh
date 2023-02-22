@@ -6,7 +6,7 @@ cd $E2E_APP_PATH
 
 # install SWM libraries
 yarn add \
-    software-mansion/react-native-reanimated#d2ecd3cc2f89ba15b689f82a10731ac94c71aecf \
+    software-mansion/react-native-reanimated#c71bdd3ba13eaab599d033de1bfa7c45e78a5a08 \
     react-native-gesture-handler@2.9.0 \
     yarn add react-native-screens@3.19.0 \
     yarn add react-native-svg@13.7.0
