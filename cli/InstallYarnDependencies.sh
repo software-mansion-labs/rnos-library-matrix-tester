@@ -4,8 +4,8 @@ REACT_NATIVE_MINOR_VERSION=$(cut -d '.' -f 2,2 <<< $E2E_REACT_NATIVE_VERSION)
 
 cd $E2E_APP_PATH
 
-# install patch-package without --error-on-fail
-CI=false yarn add --dev patch-package postinstall-postinstall || exit 1
+# install patch-package
+yarn add --dev patch-package postinstall-postinstall
 
 # install SWM libraries
 yarn add \
