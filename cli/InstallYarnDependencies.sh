@@ -4,16 +4,16 @@ REACT_NATIVE_MINOR_VERSION=$(cut -d '.' -f 2,2 <<< $E2E_REACT_NATIVE_VERSION)
 
 cd $E2E_APP_PATH
 
+# install patch-package without --error-on-fail
+CI=false yarn add --dev patch-package postinstall-postinstall || exit 1
+
 # install SWM libraries
-CI=false yarn add \
+yarn add \
     software-mansion/react-native-reanimated#b45469824047f5f2cfe73423576bba40ac4d3d84 \
     react-native-gesture-handler@2.9.0 \
     react-native-screens@3.19.0 \
     react-native-svg@13.7.0 \
     || exit 1
-
-# install patch-package
-yarn add --dev patch-package postinstall-postinstall || exit 1
 
 # install linters
 yarn add --dev prettier || exit 1
