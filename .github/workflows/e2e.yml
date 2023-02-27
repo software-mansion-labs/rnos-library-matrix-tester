@@ -15,25 +15,10 @@ jobs:
       fail-fast: false
       matrix:
         platform: ['Android', 'iOS']
-        react-native-version: ['0.64.4', '0.65.3', '0.66.5', '0.67.5', '0.68.6', '0.69.8', '0.70.7', '0.71.2']
+        react-native-version: ['0.71.3']
         architecture: ['Paper', 'Fabric']
         runtime: ['JSC', 'Hermes']
         mode: ['debug', 'release']
-        exclude:
-          - react-native-version: '0.64.4'
-            architecture: 'Fabric'
-          - react-native-version: '0.65.3'
-            architecture: 'Fabric'
-          - react-native-version: '0.66.5'
-            architecture: 'Fabric'
-          - react-native-version: '0.67.5'
-            architecture: 'Fabric'
-          - react-native-version: '0.68.6'
-            architecture: 'Fabric'
-          - react-native-version: '0.69.8'
-            architecture: 'Fabric'
-          - react-native-version: '0.70.7'
-            architecture: 'Fabric'
     env:
       E2E_REACT_NATIVE_VERSION: ${{ matrix.react-native-version }}
       E2E_ARCHITECTURE: ${{ matrix.architecture }}

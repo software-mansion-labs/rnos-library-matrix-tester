@@ -9,10 +9,10 @@ yarn add --dev patch-package postinstall-postinstall
 
 # install SWM libraries
 yarn add \
-    software-mansion/react-native-reanimated#b45469824047f5f2cfe73423576bba40ac4d3d84 \
+    file:../react-native-reanimated-3.0.0.tgz \
     react-native-gesture-handler@2.9.0 \
-    react-native-screens@3.19.0 \
-    react-native-svg@13.7.0
+    yarn add react-native-screens@3.20.0 \
+    yarn add react-native-svg@13.8.0
 
 # install linters
 yarn add --dev prettier

@@ -63,6 +63,7 @@ git push --set-upstream origin @tomekzaw/test-reanimated-3.0.0-rc.11
 - [ ] Support Expo bare workflow
 - [ ] Rewrite Bash scripts to Python
 - [ ] Run matrix tests locally using CLI
+- [ ] Improve error handling
 
 ## Copyright and License
 
