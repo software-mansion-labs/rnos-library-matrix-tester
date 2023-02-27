@@ -3,7 +3,7 @@ set -u
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # matrix parameters, feel free to tweak these values for local testing
-export E2E_REACT_NATIVE_VERSION=0.71.2
+export E2E_REACT_NATIVE_VERSION=0.71.3
 export E2E_ARCHITECTURE=Paper
 export E2E_RUNTIME=Hermes
 export E2E_MODE=debug

@@ -47,7 +47,6 @@ git push --set-upstream origin @tomekzaw/test-reanimated-3.0.0-rc.11
 
 - `app/` &ndash; this directory contains files that will be copied into the freshly created app.
   - `__tests__/e2e.test.ts` &ndash; the source code of E2E tests including setup and teardown of the client
-  - `patches/` &ndash; diffs for patch-package
   - `screens/` &ndash; components mounted as screens used during E2E testing
   - `utils.ts` &ndash; implementation of `testUtils` function that lets you specify `testID` for tested components on both platforms
 
